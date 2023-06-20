@@ -19,6 +19,9 @@ class XMLValidatorApp(tk.Tk):
         self.create_widgets()
         self.resize_window()
 
+        self.xml_data = self.fetch_sanctions()
+        self.execute()
+
     def create_widgets(self):
         self.label = ttk.Label(self, text='Excel file path:')
         self.label.pack()
@@ -29,7 +32,7 @@ class XMLValidatorApp(tk.Tk):
         self.browse_button = ttk.Button(self, text='Browse', style='Custom.TButton', command=self.browse_file)
         self.browse_button.pack()
 
-        self.button = ttk.Button(self, text='Fetch Sanctions', style='Custom.TButton', command=self.fetch_sanctions)
+        self.button = ttk.Button(self, text='Validate', style='Custom.TButton', command=self.execute)
         self.button.pack()
 
     def resize_window(self):
@@ -43,29 +46,49 @@ class XMLValidatorApp(tk.Tk):
 
 
     def fetch_sanctions(self):
-        accounts = read_input_excel(self.entry.get())
-
-        for sanction_url in SANCTIONS_URLS:
-            response = requests.get(sanction_url)
+        xml_data = []
+        for url in SANCTIONS_URLS.values():
+            response = requests.get(url)
             if response.status_code == 200:
-                analyse_xml(response.content, accounts)
+                xml_data.append(response.content)
             else:
-                print(f'There was an error accessing: {sanction_url}')
+                print(f'There was an error accessing: {url}')
+        return xml_data
+
+    def read_excel(self):
+        df = pandas.read_excel(self.entry.get())
+        line_values = df.iloc[0].tolist()
+        return line_values
 
     def browse_file(self):
         filetypes = (('Excel Files', '*.xlsx'), ('All Files', '*.*'))
         filename = filedialog.askopenfilename(filetypes=filetypes)
         self.entry.delete(0, tk.END)
         self.entry.insert(0, filename)
-        
 
-def read_input_excel(excel):
-    pd = pandas.read_excel(excel)
-    accounts = pd['Account Number'].tolist()
-    return accounts
+    def execute(self):
+        excel_filepath = self.entry.get()
+        if not excel_filepath:
+            print("No Excel file selected.")
+            return
 
-def analyse_xml(xml_content):
-    root = etree.fromstring(xml_content)
+        excel_data = self.read_excel()
+
+        for line in excel_data:
+            nome, emitente = line[0], line[1]
+            if self.check_match(nome, emitente):
+                print(f'Match found for Nome: {nome} or Emitente: {emitente}')
+            else:
+                print(f'No match found for Nome: {nome} or Emitente: {emitente}')
+
+    def check_match(self, nome, emitente):
+        for xml_content in self.xml_data:
+            root = etree.fromstring(xml_content)
+            for element in root.iter():
+                if element.text == nome or element.text == emitente:
+                    return True
+                else:
+                    return False
 
 if __name__ == '__main__':
     app = XMLValidatorApp()
