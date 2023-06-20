@@ -19,7 +19,6 @@ class XMLValidatorApp(tk.Tk):
         self.create_widgets()
         self.resize_window()
 
-        self.xml_data = self.fetch_sanctions()
         self.execute()
 
     def create_widgets(self):
@@ -73,16 +72,17 @@ class XMLValidatorApp(tk.Tk):
             return
 
         excel_data = self.read_excel()
+        xml_data = self.fetch_sanctions()
 
         for line in excel_data:
             nome, emitente = line[0], line[1]
-            if self.check_match(nome, emitente):
+            if self.check_match(xml_data, nome, emitente):
                 print(f'Match found for Nome: {nome} or Emitente: {emitente}')
             else:
                 print(f'No match found for Nome: {nome} or Emitente: {emitente}')
 
-    def check_match(self, nome, emitente):
-        for xml_content in self.xml_data:
+    def check_match(self, xml_data, nome, emitente):
+        for xml_content in xml_data:
             root = etree.fromstring(xml_content)
             for element in root.iter():
                 if element.text == nome or element.text == emitente:
