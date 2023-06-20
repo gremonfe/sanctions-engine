@@ -42,9 +42,12 @@ class XMLValidatorApp(tk.Tk):
         self.button = ttk.Button(self, text='Validate', style='Custom.TButton', command=self.execute)
         self.button.pack()
 
+        self.log_text = tk.Text(self, height=10, width=50)
+        self.log_text.pack()
+
     def resize_window(self):
         window_width = 400
-        window_height = 100
+        window_height = 150
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x_cordinate = int((screen_width / 2) - (window_width / 2))
@@ -78,7 +81,9 @@ class XMLValidatorApp(tk.Tk):
     def execute(self):
         excel_filepath = self.entry.get()
         if not excel_filepath:
-            print("No Excel file selected.")
+            error_msg = "No Excel file selected!"
+            self.logger.error(error_msg)
+            self.log_text.insert(tk.END, error_msg + '\n')
             return
 
         excel_data = self.read_excel()
