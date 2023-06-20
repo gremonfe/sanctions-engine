@@ -57,7 +57,7 @@ class XMLValidatorApp(tk.Tk):
 
     def read_excel(self):
         df = pandas.read_excel(self.entry.get())
-        line_values = df.iloc[0].tolist()
+        line_values = df.values.tolist()
         return line_values
 
     def browse_file(self):
