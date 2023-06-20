@@ -1,7 +1,8 @@
 import requests 
 import pandas
 import tkinter as tk
-from tkinter import filedialog
+
+from tkinter import filedialog, ttk
 from lxml import etree
 from constants import SANCTIONS_URLS
 
@@ -10,25 +11,30 @@ class XMLValidatorApp(tk.Tk):
         super().__init__()
         self.title('Sanctions Validator App')
 
+        # Create a custom style for the widgets
+        self.style = ttk.Style()
+        self.style.configure('Custom.TButton', background='#4CAF50', foreground='white')
+        self.style.configure('Custom.TEntry', background='#F1F1F0')
+
         self.create_widgets()
         self.resize_window()
 
     def create_widgets(self):
-        self.label = tk.Label(self, text='Excel file path:')
+        self.label = ttk.Label(self, text='Excel file path:')
         self.label.pack()
 
-        self.entry = tk.Entry(self)
+        self.entry = ttk.Entry(self, style='Custom.TEntry')
         self.entry.pack()
 
-        self.browse_button = tk.Button(self, text='Browse', command=self.browse_file)
+        self.browse_button = ttk.Button(self, text='Browse', style='Custom.TButton', command=self.browse_file)
         self.browse_button.pack()
 
-        self.button = tk.Button(self, text='Fetch Sanctions', command=self.fetch_sanctions)
+        self.button = ttk.Button(self, text='Fetch Sanctions', style='Custom.TButton', command=self.fetch_sanctions)
         self.button.pack()
 
     def resize_window(self):
         window_width = 400
-        window_height = 200
+        window_height = 100
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x_cordinate = int((screen_width / 2) - (window_width / 2))
