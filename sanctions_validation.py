@@ -1,6 +1,7 @@
 import requests 
 import pandas
 import tkinter as tk
+import logging
 
 from tkinter import filedialog, ttk
 from lxml import etree
@@ -10,6 +11,13 @@ class XMLValidatorApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('Sanctions Validator App')
+
+        logging.basicConfig(level=logging.INFO,
+                            format='%(asctime)s - %(levelname)s - %(message)s',
+                            filename='sanctions.log',
+                            filemode='w')
+        
+        self.logger = logging.getLogger()
 
         # Create a custom style for the widgets
         self.style = ttk.Style()
@@ -51,7 +59,9 @@ class XMLValidatorApp(tk.Tk):
             if response.status_code == 200:
                 xml_data.append(response.content)
             else:
-                print(f'There was an error accessing: {url}')
+                error_msg = f'There was an error accessing: {url} - Status code: {response.status_code}'
+                self.logger.error(error_msg)
+                print(error_msg)
         return xml_data
 
     def read_excel(self):
@@ -77,9 +87,13 @@ class XMLValidatorApp(tk.Tk):
         for line in excel_data:
             nome, emitente = line[0], line[1]
             if self.check_match(xml_data, nome, emitente):
-                print(f'Match found for Nome: {nome} or Emitente: {emitente}')
+                log_msg = f'Match found for Nome: {nome} or Emitente: {emitente}'
+                self.logger.warning(log_msg)
+                print(log_msg)
             else:
-                print(f'No match found for Nome: {nome} or Emitente: {emitente}')
+                log_msg = f'No match found for Nome: {nome} or Emitente: {emitente}'
+                self.logger.info(log_msg)
+                print(log_msg)
 
     def check_match(self, xml_data, nome, emitente):
         for xml_content in xml_data:
