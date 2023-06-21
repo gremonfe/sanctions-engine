@@ -64,6 +64,7 @@ class XMLValidatorApp(tk.Tk):
             else:
                 error_msg = f'There was an error accessing: {url} - Status code: {response.status_code}'
                 self.logger.error(error_msg)
+                self.log_text.insert(tk.END, error_msg + '\n')
                 print(error_msg)
         return xml_data
 
@@ -94,6 +95,7 @@ class XMLValidatorApp(tk.Tk):
             if self.check_match(xml_data, nome, emitente):
                 log_msg = f'Match found for Nome: {nome} or Emitente: {emitente}'
                 self.logger.warning(log_msg)
+                self.log_text.insert(tk.END, log_msg + '\n')
                 print(log_msg)
             else:
                 log_msg = f'No match found for Nome: {nome} or Emitente: {emitente}'
