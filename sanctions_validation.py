@@ -27,8 +27,6 @@ class XMLValidatorApp(tk.Tk):
         self.create_widgets()
         self.resize_window()
 
-        self.execute()
-
     def create_widgets(self):
         self.label = ttk.Label(self, text='Excel file path:')
         self.label.pack()
@@ -108,8 +106,7 @@ class XMLValidatorApp(tk.Tk):
             for element in root.iter():
                 if element.text == nome or element.text == emitente:
                     return True
-                else:
-                    return False
+        return False
 
 if __name__ == '__main__':
     app = XMLValidatorApp()
