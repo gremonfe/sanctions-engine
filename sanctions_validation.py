@@ -54,11 +54,11 @@ class XMLValidatorApp(tk.Tk):
 
 
     def fetch_sanctions(self):
-        xml_data = []
-        for url in SANCTIONS_URLS.values():
+        xml_data = {}
+        for source, url in SANCTIONS_URLS.items():
             response = requests.get(url)
             if response.status_code == 200:
-                xml_data.append(response.content)
+                xml_data[response.content] = source
             else:
                 error_msg = f'There was an error accessing: {url} - Status code: {response.status_code}'
                 self.logger.error(error_msg)
@@ -90,8 +90,9 @@ class XMLValidatorApp(tk.Tk):
 
         for line in excel_data:
             nome, emitente = line[0], line[1]
-            if self.check_match(xml_data, nome, emitente):
-                log_msg = f'Match found for Nome: {nome} or Emitente: {emitente}'
+            matched, source = self.check_match(xml_data, nome, emitente)
+            if matched:
+                log_msg = f'Match found for Nome: {nome} or Emitente: {emitente} in {source} XML'
                 self.logger.warning(log_msg)
                 self.log_text.insert(tk.END, log_msg + '\n')
                 print(log_msg)
@@ -101,12 +102,12 @@ class XMLValidatorApp(tk.Tk):
                 print(log_msg)
 
     def check_match(self, xml_data, nome, emitente):
-        for xml_content in xml_data:
+        for xml_content, source in xml_data.items():
             root = etree.fromstring(xml_content)
             for element in root.iter():
                 if element.text == nome or element.text == emitente:
-                    return True
-        return False
+                    return True, source
+        return False, None
 
 if __name__ == '__main__':
     app = XMLValidatorApp()
