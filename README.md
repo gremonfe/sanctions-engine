@@ -50,10 +50,7 @@ Add as many sources and URLs as needed, ensuring that each URL points to a valid
 ## Usage
 
 1. Open a terminal or command prompt.
-2. Navigate to the project directory:
-```shell
-cd sanctions-validator
-```
+2. Navigate to the project directory: `cd sanctions-validator`
 3. Launch the application: `python sanctions_validator.py`
 4. The application will display a GUI window.
 5. Click the "Browse" button to select an Excel file for validation.
