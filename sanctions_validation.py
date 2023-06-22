@@ -6,7 +6,6 @@ import json
 
 from tkinter import filedialog, ttk
 from lxml import etree
-from constants import SANCTIONS_URLS
 
 class XMLValidatorApp(tk.Tk):
     def __init__(self):
