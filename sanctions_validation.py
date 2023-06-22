@@ -2,6 +2,7 @@ import requests
 import pandas
 import tkinter as tk
 import logging
+import json
 
 from tkinter import filedialog, ttk
 from lxml import etree
@@ -19,7 +20,6 @@ class XMLValidatorApp(tk.Tk):
         
         self.logger = logging.getLogger()
 
-        # Create a custom style for the widgets
         self.style = ttk.Style()
         self.style.configure('Custom.TButton', background='#4CAF50', foreground='white')
         self.style.configure('Custom.TEntry', background='#F1F1F0')
@@ -40,12 +40,12 @@ class XMLValidatorApp(tk.Tk):
         self.button = ttk.Button(self, text='Validate', style='Custom.TButton', command=self.execute)
         self.button.pack()
 
-        self.log_text = tk.Text(self, height=10, width=50)
+        self.log_text = tk.Text(self, height=20, width=80)
         self.log_text.pack()
 
     def resize_window(self):
-        window_width = 400
-        window_height = 150
+        window_width = 500
+        window_height = 200
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x_cordinate = int((screen_width / 2) - (window_width / 2))
@@ -55,16 +55,30 @@ class XMLValidatorApp(tk.Tk):
 
     def fetch_sanctions(self):
         xml_data = {}
-        for source, url in SANCTIONS_URLS.items():
+
+        with open('config.json') as config_file:
+            xml_data = json.load(config_file)
+
+        fetched_data = {}
+
+        for source, url in xml_data.items():
             response = requests.get(url)
             if response.status_code == 200:
-                xml_data[response.content] = source
+                xml_content = response.content.decode('utf-8')
+                fetched_data[xml_content] = source
+
+                # Extract the name of the XML file from the URL
+                xml_filename = url.split('/')[-1]
+                log_msg = f'Fetched XML: {source} - {xml_filename}'
+                self.logger.info(log_msg)
+                self.log_text.insert(tk.END, log_msg + '\n')
+                print(log_msg)
             else:
                 error_msg = f'There was an error accessing: {url} - Status code: {response.status_code}'
                 self.logger.error(error_msg)
                 self.log_text.insert(tk.END, error_msg + '\n')
                 print(error_msg)
-        return xml_data
+        return fetched_data
 
     def read_excel(self):
         df = pandas.read_excel(self.entry.get())
@@ -102,10 +116,13 @@ class XMLValidatorApp(tk.Tk):
                 print(log_msg)
 
     def check_match(self, xml_data, nome, emitente):
+    
         for xml_content, source in xml_data.items():
             root = etree.fromstring(xml_content)
             for element in root.iter():
-                if element.text == nome or element.text == emitente:
+             if element.text:
+                element_text = str(element.text)
+                if element_text.lower() == nome.lower() or element_text.lower() == emitente.lower():
                     return True, source
         return False, None
 
