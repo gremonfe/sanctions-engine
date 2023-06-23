@@ -1,11 +1,9 @@
 import sys
-import os
 from cx_Freeze import setup, Executable
 
 # Dependencies are automatically detected, but it might need fine tuning.
 build_exe_options = {
-    'packages': ['requests'],
-    'excludes': ['tkinter'],
+    'packages': ['requests', 'tkinter'],
     'include_files': ['config.json']
 }
 
