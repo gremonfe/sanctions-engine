@@ -1,4 +1,4 @@
 {
-    "SanctionsList1" : "www.example/com/sanctionsList1.xml",
-    "SanctionsList2" : "www.example/com/sanctionsList2.xml"
+    "OFAC" : "https://www.treasury.gov/ofac/downloads/sdn.xml",
+    "UK" : "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1163754/UK_Sanctions_List.xml"
 }
