@@ -163,3 +163,4 @@ cython_debug/
 /.vscode
 /lib64
 /Test
+config.json
