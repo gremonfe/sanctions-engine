@@ -20,8 +20,8 @@ class XMLValidatorApp(tk.Tk):
         self.logger = logging.getLogger()
 
         self.style = ttk.Style()
-        self.style.configure('Custom.TButton', background='#4CAF50', foreground='white')
-        self.style.configure('Custom.TEntry', background='#F1F1F0')
+        self.style.configure('Custom.TButton', background='black', foreground='black')
+        self.style.configure('Custom.TEntry', background='green')
 
         self.create_widgets()
         self.resize_window()
@@ -36,7 +36,7 @@ class XMLValidatorApp(tk.Tk):
         self.browse_button = ttk.Button(self, text='Browse', style='Custom.TButton', command=self.browse_file)
         self.browse_button.pack()
 
-        self.button = ttk.Button(self, text='Validate', style='Custom.TButton', command=self.execute)
+        self.button = ttk.Button(self, text='Validate', style='Custom.TButton', width=20, command=self.execute)
         self.button.pack()
 
         self.log_text = tk.Text(self, height=20, width=80)
