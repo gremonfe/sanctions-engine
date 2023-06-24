@@ -55,6 +55,10 @@ class XMLValidatorApp(tk.Tk):
     def fetch_sanctions(self):
         xml_data = {}
 
+        info_msg = "Starting Sanction lists reading..."
+        self.logger.error(info_msg)
+        self.log_text.insert(tk.END, info_msg + '\n')
+
         with open('config.json') as config_file:
             xml_data = json.load(config_file)
 
@@ -80,6 +84,10 @@ class XMLValidatorApp(tk.Tk):
         return fetched_data
 
     def read_excel(self):
+        info_msg = "Starting Excel reading..."
+        self.logger.error(info_msg)
+        self.log_text.insert(tk.END, info_msg + '\n')
+
         df = pandas.read_excel(self.entry.get())
         line_values = df.values.tolist()
         return line_values
@@ -100,6 +108,11 @@ class XMLValidatorApp(tk.Tk):
 
         excel_data = self.read_excel()
         xml_data = self.fetch_sanctions()
+
+
+        info_msg = "Validating matches entries..."
+        self.logger.error(info_msg)
+        self.log_text.insert(tk.END, info_msg + '\n')
 
         for line in excel_data:
             nome, emitente = line[0], line[1]
