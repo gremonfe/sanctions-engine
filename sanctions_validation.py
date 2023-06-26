@@ -127,6 +127,11 @@ class XMLValidatorApp(tk.Tk):
                 self.logger.info(log_msg)
                 print(log_msg)
 
+        log_msg = f'The search for matches was finished!'
+        self.logger.warning(log_msg)
+        self.log_text.insert(tk.END, log_msg + '\n')
+        print(log_msg)
+
     def check_match(self, xml_data, nome, emitente):
     
         for xml_content, source in xml_data.items():
